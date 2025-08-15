@@ -19,10 +19,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of your application code into the container
 COPY . .
 
-# Command to run the application
-# - Gunicorn is a robust production server.
-# - The `--bind :$PORT` command is crucial. It tells Gunicorn to listen on
-#   whatever port Cloud Run assigns via the $PORT environment variable.
-# - We use uvicorn workers, which are required for an ASGI app like FastAPI.
-# - We now use the full path to gunicorn to ensure it's always found.
-CMD exec /usr/local/bin/gunicorn --bind :$PORT --workers 4 --worker-class uvicorn.workers.UvicornWorker app:app
+# Command to run the application using the recommended "exec form".
+# This form avoids a shell intermediary and correctly finds gunicorn in the system's PATH.
+CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "app:app"]
