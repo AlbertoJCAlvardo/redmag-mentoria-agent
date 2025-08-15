@@ -204,7 +204,7 @@ async def get_conversation_messages(
         raise HTTPException(status_code=400, detail="Size must be between 1 and 50")
     
     try:
-        messages_data = chat_controller.bq_adapter.get_conversation_messages(conversation_id, page, size)
+        messages_data = chat_controller.chat_service.bq_adapter.get_conversation_messages(conversation_id, page, size)
         
         return MessageListResponse(
             messages=messages_data["messages"],
@@ -232,13 +232,13 @@ async def get_latest_conversation(
     """
     try:
         # Get latest conversation ID
-        latest_conversation_id = chat_controller.bq_adapter.get_latest_conversation_id(user_id)
+        latest_conversation_id = chat_controller.chat_service.bq_adapter.get_latest_conversation_id(user_id)
         
         if not latest_conversation_id:
             raise HTTPException(status_code=404, detail="No conversations found for this user")
         
         # Get conversation information
-        conversation_info = chat_controller.bq_adapter.get_conversation_info(latest_conversation_id)
+        conversation_info = chat_controller.chat_service.bq_adapter.get_conversation_info(latest_conversation_id)
         
         if not conversation_info:
             raise HTTPException(status_code=404, detail="Conversation information not found")
@@ -263,7 +263,7 @@ async def get_conversation_info(
         conversation_id: Conversation identifier
     """
     try:
-        conversation_info = chat_controller.bq_adapter.get_conversation_info(conversation_id)
+        conversation_info = chat_controller.chat_service.bq_adapter.get_conversation_info(conversation_id)
         
         if not conversation_info:
             raise HTTPException(status_code=404, detail="Conversation not found")

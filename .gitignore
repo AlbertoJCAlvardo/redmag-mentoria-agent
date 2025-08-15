@@ -50,6 +50,9 @@ venv/
 env/
 ENV/
 
+#extra files
+extras/
+
 # Backup files
 *.backup
 
