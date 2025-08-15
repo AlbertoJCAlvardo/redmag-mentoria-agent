@@ -15,7 +15,6 @@ WORKDIR $APP_HOME
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy and install Python dependencies in a separate layer to leverage Docker caching
@@ -29,10 +28,9 @@ COPY . .
 # Expose the port
 EXPOSE $PORT
 
-# Health check
+# Health check using Python instead of curl
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:$PORT/health || exit 1
+    CMD python -c "import requests; requests.get('http://localhost:$PORT/health')" || exit 1
 
-# Command to run the application by invoking gunicorn as a Python module.
-# This is the most reliable method as it doesn't depend on the system's PATH.
-CMD exec python -m gunicorn --bind 0.0.0.0:$PORT --workers 4 --worker-class uvicorn.workers.UvicornWorker --timeout 120 --keep-alive 5 app:app
+# Command to run the application using uvicorn directly (more reliable for FastAPI)
+CMD exec uvicorn app:app --host 0.0.0.0 --port $PORT --workers 1 --timeout-keep-alive 120
