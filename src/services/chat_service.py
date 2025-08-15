@@ -166,10 +166,18 @@ class ChatService:
                 self.bq_adapter.update_user_profile(user_id, user_profile)
                 
                 # Actualizar contexto con los datos del perfil
+                # Convertir valores a string de manera segura
+                field_strings = []
+                for k, v in updated_fields.items():
+                    if isinstance(v, list):
+                        field_strings.append(f"{k}=[{', '.join(map(str, v))}]")
+                    else:
+                        field_strings.append(f"{k}={v}")
+                
                 updated_context = self._update_conversation_history(
                     conversation_context, 
                     {"intent": "profile_update", "updated_fields": updated_fields}, 
-                    f"Actualizó perfil: {', '.join([f'{k}={v}' for k, v in updated_fields.items()])}"
+                    f"Actualizó perfil: {', '.join(field_strings)}"
                 )
                 self.bq_adapter.update_conversation_context(conversation_id, user_id, updated_context)
                 

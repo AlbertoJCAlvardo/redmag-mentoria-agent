@@ -20,16 +20,35 @@ class VectorSearchAdapter:
 
     def __init__(self):
         """Initialize Vector Search client."""
+        self.index_endpoint = None
+        self.index = None
+        self.is_initialized = False
+        
+        # Check if required configuration is available
+        if not config.project_id:
+            logger.warning("GOOGLE_CLOUD_PROJECT_ID not configured, VectorSearchAdapter will be disabled")
+            return
+            
+        if not config.endpoint_id:
+            logger.warning("VECTOR_ENDPOINT_ID not configured, VectorSearchAdapter will be disabled")
+            return
+            
+        if not config.index_id:
+            logger.warning("VECTOR_INDEX_ID not configured, VectorSearchAdapter will be disabled")
+            return
+        
         try:
             aiplatform.init(project=config.project_id, location=config.location)
             self.index_endpoint = aiplatform.MatchingEngineIndexEndpoint(
                 index_endpoint_name=config.endpoint_id
             )
             self.index = aiplatform.MatchingEngineIndex(index_name=config.index_id)
+            self.is_initialized = True
             logger.info("VectorSearchAdapter initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize Vector Search client: {e}", exc_info=True)
-            raise
+            logger.warning("VectorSearchAdapter will be disabled, using fallback responses")
+            self.is_initialized = False
 
     def search_similar(self, query: str, num_neighbors: int = 5) -> List[Dict[str, Any]]:
         """
@@ -42,6 +61,10 @@ class VectorSearchAdapter:
         Returns:
             List of similar documents with metadata
         """
+        if not self.is_initialized:
+            logger.warning("VectorSearchAdapter not initialized, returning empty results")
+            return []
+            
         try:
             query_embedding = self._get_embedding(query)
             response = self.index_endpoint.find_neighbors(
@@ -75,6 +98,10 @@ class VectorSearchAdapter:
         Returns:
             List of documents of specified type
         """
+        if not self.is_initialized:
+            logger.warning("VectorSearchAdapter not initialized, returning empty results")
+            return []
+            
         try:
             # This is a simplified implementation
             # In a real scenario, you might need to implement filtering by type
@@ -95,6 +122,10 @@ class VectorSearchAdapter:
         Returns:
             Dictionary mapping document IDs to success status
         """
+        if not self.is_initialized:
+            logger.warning("VectorSearchAdapter not initialized, cannot insert documents")
+            return {doc.get('id', 'unknown'): False for doc in documents}
+            
         try:
             results = {}
             for doc in documents:
@@ -131,6 +162,10 @@ class VectorSearchAdapter:
         Returns:
             Dictionary mapping document IDs to success status
         """
+        if not self.is_initialized:
+            logger.warning("VectorSearchAdapter not initialized, cannot insert documents")
+            return {doc.get('id', 'unknown'): False for doc in documents}
+            
         try:
             results = {}
             for doc in documents:
@@ -164,6 +199,13 @@ class VectorSearchAdapter:
         Returns:
             Index information dictionary or None if error
         """
+        if not self.is_initialized:
+            logger.warning("VectorSearchAdapter not initialized, returning basic info")
+            return {
+                "status": "not_initialized",
+                "reason": "Missing required configuration (VECTOR_ENDPOINT_ID, VECTOR_INDEX_ID, or GOOGLE_CLOUD_PROJECT_ID)"
+            }
+            
         try:
             # This would return actual index information
             # For now, returning a placeholder
@@ -183,6 +225,15 @@ class VectorSearchAdapter:
         Returns:
             Index statistics dictionary or None if error
         """
+        if not self.is_initialized:
+            logger.warning("VectorSearchAdapter not initialized, returning placeholder stats")
+            return {
+                "status": "not_initialized",
+                "vectors_count": 0,
+                "index_size": "0B",
+                "last_updated": "N/A"
+            }
+            
         try:
             # This would return actual index statistics
             # For now, returning a placeholder
@@ -205,6 +256,10 @@ class VectorSearchAdapter:
         Returns:
             Embedding vector as list of floats
         """
+        if not self.is_initialized:
+            logger.warning("VectorSearchAdapter not initialized, returning placeholder embedding")
+            return [0.0] * 768
+            
         try:
             # This would use the actual embedding model
             # For now, returning a placeholder embedding
