@@ -33,43 +33,38 @@ He sido programado para ser su compañero en esta noble misión de educar.
         """.strip()
 
         available_options = [
+           # {
+            #    "label": "📚 Ayuda con Planeaciones",
+            #    "value": "planeaciones",
+            #    "description": "Crear y mejorar planeaciones didácticas"
+            #},
             {
-                "label": "📚 Ayuda con Planeaciones",
-                "value": "planeaciones",
-                "description": "Crear y mejorar planeaciones didácticas"
-            },
-            {
-                "label": "📖 Materiales Educativos (MEDs)",
+                "label": "Materiales Educativos (MEDs)",
                 "value": "meds",
-                "description": "Buscar y crear materiales educativos"
+                "description": "Buscar  materiales educativos"
             },
             {
-                "label": "🎯 Evaluación y Diagnóstico",
+                "label": "Evaluación y Diagnóstico",
                 "value": "evaluacion",
                 "description": "Herramientas de evaluación y diagnóstico educativo"
             },
             {
-                "label": "🔧 Metodologías de Enseñanza",
+                "label": "Metodologías de Enseñanza",
                 "value": "metodologias",
                 "description": "Estrategias y metodologías pedagógicas"
             },
             {
-                "label": "📋 Programas Analíticos",
+                "label": "Programas Analíticos",
                 "value": "programas",
                 "description": "Ayuda con programas analíticos y secuencias"
             },
             {
-                "label": "❓ Preguntas Generales",
+                "label": "Preguntas Generales",
                 "value": "general",
                 "description": "Consultas generales sobre educación"
             },
             {
-                "label": "⚙️ Configurar Perfil",
-                "value": "perfil",
-                "description": "Actualizar información de su perfil"
-            },
-            {
-                "label": "✍️ Escribir Consulta Personalizada",
+                "label": "Escribir Consulta Personalizada",
                 "value": "otro",
                 "description": "Escribir su consulta específica directamente"
             }
