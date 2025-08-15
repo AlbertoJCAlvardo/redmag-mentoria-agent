@@ -18,6 +18,14 @@ class Config:
 
     def __init__(self):
         """Initialize configuration with environment variables."""
+        # --- Project Directory Setup ---
+        # Define the base directory of the application (the 'src' folder)
+        # This makes file paths independent of the current working directory.
+        # Path(__file__) is the path to this config.py file.
+        # .resolve() makes it an absolute path.
+        # .parent gets the directory containing it ('src').
+        BASE_DIR = Path(__file__).resolve().parent
+
         # Google Cloud Configuration
         self.project_id = os.getenv("GOOGLE_CLOUD_PROJECT_ID")
         self.location = os.getenv("GOOGLE_CLOUD_LOCATION", "us-east1")
@@ -56,19 +64,29 @@ class Config:
 
         # Logging Configuration
         self.log_level = os.getenv("LOG_LEVEL", "INFO")
-        self.static_files_path = Path(os.getenv("STATIC_FILES_PATH"))
-        self.knowledge_base_nem_path = self.static_files_path / Path(os.getenv("KNOWLEDGE_BASE_NEM_PATH"))
-        with open(self.knowledge_base_nem_path, "r") as f:
-            self.knowledge_base_nem = json.load(f)
-            f.close()
-        if self.knowledge_base_nem is None:
-            raise ValueError("Knowledge base NEM not found")
-        self.sep_knowledge_base_path = self.static_files_path / Path(os.getenv("SEP_KNOWLEDGE_BASE_PATH"))
-        with open(self.sep_knowledge_base_path, "r") as f:
-            self.sep_knowledge_base = json.load(f)
-            f.close()
-        if self.sep_knowledge_base is None:
-            raise ValueError("SEP knowledge base not found")
+
+        # --- Static Knowledge Base Loading ---
+        # Construct absolute paths to the knowledge base files inside 'src/static'
+        static_files_path = BASE_DIR / "src" /"static"
+        knowledge_base_nem_path = static_files_path / "knowledge_base_nem.json"
+        sep_knowledge_base_path = static_files_path / "sep_knowledge_base.json"
+
+        try:
+            with open(knowledge_base_nem_path, "r", encoding="utf-8") as f:
+                self.knowledge_base_nem = json.load(f)
+        except FileNotFoundError:
+            raise ValueError(f"Knowledge base NEM not found at the expected path: {knowledge_base_nem_path}")
+        except json.JSONDecodeError:
+            raise ValueError(f"Error decoding JSON from {knowledge_base_nem_path}")
+
+        try:
+            with open(sep_knowledge_base_path, "r", encoding="utf-8") as f:
+                self.sep_knowledge_base = json.load(f)
+        except FileNotFoundError:
+            raise ValueError(f"SEP knowledge base not found at the expected path: {sep_knowledge_base_path}")
+        except json.JSONDecodeError:
+            raise ValueError(f"Error decoding JSON from {sep_knowledge_base_path}")
+
 
     def validate(self) -> bool:
         """Validate that required configuration values are present."""
@@ -101,4 +119,4 @@ class Config:
 
 
 # Global configuration instance
-config = Config() 
+config = Config()
