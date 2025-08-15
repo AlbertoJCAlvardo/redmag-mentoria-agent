@@ -51,6 +51,7 @@ class ChatService:
         self._log_user_input(conversation_id, user_id, message, user_data_input)
         
         user_profile = self.bq_adapter.get_user_profile(user_id) or {}
+        logger.info(f"DEBUG - user_profile: {user_profile}, type: {type(user_profile)}")
         conversation_context = self.bq_adapter.get_conversation_context(conversation_id) or {}
 
         # Debug: Imprimir información del contexto
