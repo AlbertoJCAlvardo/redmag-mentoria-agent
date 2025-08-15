@@ -55,6 +55,10 @@ class Config:
         # API Authentication (for external CMS APIs)
         self.api_username = os.getenv("API_USERNAME")
         self.api_password = os.getenv("API_PASSWORD")
+        
+        # API Token Authentication (temporarily disabled)
+        self.api_token = os.getenv("API_TOKEN")
+        self.require_auth = os.getenv("REQUIRE_AUTH", "false").lower() == "true"  # Disabled by default
 
         self.batch_size = 100
 

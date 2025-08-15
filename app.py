@@ -17,9 +17,10 @@ from pydantic import BaseModel, Field
 from src.controllers.chat_controller import ChatController
 from src.controllers.content_controller import ContentController
 from src.models.request_models import ChatRequest, UserDataInput
-from src.models.response_models import ChatResponse
+from src.models.response_models import ChatResponse, MessageListResponse, ConversationResponse
 from src.services.dependency_injection import get_chat_controller, get_content_controller
 from src.config import config
+from src.middleware.auth_middleware import auth_dependency
 
 logging.basicConfig(level=getattr(logging, config.log_level, "INFO"))
 logger = logging.getLogger(__name__)
@@ -179,3 +180,98 @@ async def delete_planeacion_content(
     except Exception as e:
         logger.error(f"Error deleting Planeacion content {planeacion_id}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Error deleting content")
+
+# ===== CONVERSATION MANAGEMENT ENDPOINTS =====
+
+@app.get("/conversations/{conversation_id}/messages", response_model=MessageListResponse, summary="Get Conversation Messages")
+async def get_conversation_messages(
+    conversation_id: str,
+    page: int = 1,
+    size: int = 8,
+    chat_controller: ChatController = Depends(get_chat_controller)
+):
+    """
+    Get paginated messages for a specific conversation.
+    
+    Args:
+        conversation_id: Conversation identifier
+        page: Page number (1-based, default: 1)
+        size: Number of messages per page (default: 8, max: 50)
+    """
+    if page < 1:
+        raise HTTPException(status_code=400, detail="Page must be 1 or greater")
+    if size < 1 or size > 50:
+        raise HTTPException(status_code=400, detail="Size must be between 1 and 50")
+    
+    try:
+        messages_data = chat_controller.bq_adapter.get_conversation_messages(conversation_id, page, size)
+        
+        return MessageListResponse(
+            messages=messages_data["messages"],
+            total=messages_data["total"],
+            page=messages_data["page"],
+            size=messages_data["size"],
+            has_next=messages_data["has_next"],
+            has_previous=messages_data["has_previous"]
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting messages for conversation {conversation_id}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error retrieving messages")
+
+@app.get("/users/{user_id}/latest-conversation", response_model=ConversationResponse, summary="Get Latest Conversation")
+async def get_latest_conversation(
+    user_id: str,
+    chat_controller: ChatController = Depends(get_chat_controller)
+):
+    """
+    Get the latest conversation information for a user.
+    
+    Args:
+        user_id: User identifier
+    """
+    try:
+        # Get latest conversation ID
+        latest_conversation_id = chat_controller.bq_adapter.get_latest_conversation_id(user_id)
+        
+        if not latest_conversation_id:
+            raise HTTPException(status_code=404, detail="No conversations found for this user")
+        
+        # Get conversation information
+        conversation_info = chat_controller.bq_adapter.get_conversation_info(latest_conversation_id)
+        
+        if not conversation_info:
+            raise HTTPException(status_code=404, detail="Conversation information not found")
+        
+        return ConversationResponse(**conversation_info)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting latest conversation for user {user_id}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error retrieving conversation")
+
+@app.get("/conversations/{conversation_id}", response_model=ConversationResponse, summary="Get Conversation Info")
+async def get_conversation_info(
+    conversation_id: str,
+    chat_controller: ChatController = Depends(get_chat_controller)
+):
+    """
+    Get information about a specific conversation.
+    
+    Args:
+        conversation_id: Conversation identifier
+    """
+    try:
+        conversation_info = chat_controller.bq_adapter.get_conversation_info(conversation_id)
+        
+        if not conversation_info:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+        
+        return ConversationResponse(**conversation_info)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting conversation info for {conversation_id}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error retrieving conversation information")

@@ -59,7 +59,8 @@ class RouterAgent:
             **Tu Misión (Decisión Rápida):**
             - **Ruta 1 (`direct_answer`):** Si el mensaje es un saludo o una pregunta MUY simple que se puede inferir de los tópicos (ej. "¿Hablan del CTE?"), responde directamente con personalidad JARVIS.
             - **Ruta 2 (`ask_for_information`):** Si la intención es buscar recursos pero falta información CRÍTICA en el perfil ('nivel', 'grado'), pide esa información con personalidad JARVIS.
-            - **Ruta 3 (`needs_deep_analysis`):** Si la pregunta es compleja, requiere combinar información, o necesita una búsqueda semántica profunda de recursos (ej. "dame ideas para mi programa analítico de 5to grado"), DELEGA la tarea al siguiente agente. Tu única tarea es seleccionar el contexto relevante que el siguiente agente necesitará.
+            - **Ruta 3 (`content_creation_redirect`):** Si el usuario solicita explícitamente crear planeaciones, MEDs, o contenido educativo (ej. "¿cómo creo una planeación?", "quiero hacer un MED", "necesito crear contenido"), redirige directamente a las herramientas de creación.
+            - **Ruta 4 (`needs_deep_analysis`):** Si la pregunta es compleja, requiere combinar información, o necesita una búsqueda semántica profunda de recursos (ej. "dame ideas para mi programa analítico de 5to grado"), DELEGA la tarea al siguiente agente. Tu única tarea es seleccionar el contexto relevante que el siguiente agente necesitará.
 
             **Responde ÚNICAMENTE con un objeto JSON válido con la siguiente estructura:**
             ```json
@@ -67,7 +68,7 @@ class RouterAgent:
                 "intent": "<string: tu análisis de la intención>",
                 "analysis": "<string: tu razonamiento para la ruta elegida>",
                 "action": {{
-                    "type": "<string: 'direct_answer' | 'ask_for_information' | 'needs_deep_analysis'>",
+                    "type": "<string: 'direct_answer' | 'ask_for_information' | 'content_creation_redirect' | 'needs_deep_analysis'>",
                     "data": {{
                         "response_text": "<string: para 'direct_answer' con personalidad JARVIS>",
                         "questions": [
@@ -77,6 +78,8 @@ class RouterAgent:
                                 "options": [{{ "label": "<string>", "value": "<string>" }}]
                             }}
                         ],
+                        "redirect_type": "<string: para 'content_creation_redirect', 'planeacion' | 'med' | 'both'>",
+                        "redirect_message": "<string: para 'content_creation_redirect', mensaje explicativo con personalidad JARVIS>",
                         "selected_context_keys": ["<string: para 'needs_deep_analysis', lista de claves de conocimiento relevantes para el Agente 2>"]
                     }}
                 }}

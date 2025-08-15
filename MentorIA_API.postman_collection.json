@@ -1,0 +1,819 @@
+{
+    "info": {
+        "_postman_id": "mentoria-chatbot-api",
+        "name": "MentorIA Chatbot API",
+        "description": "API completa para el chatbot educativo MentorIA con endpoints de chat, contenido y gestión de conversaciones",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "mentoria-api"
+    },
+    "item": [
+        {
+            "name": "🏥 Health & Status",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        },
+                        "description": "Verifica el estado de salud de la API"
+                    },
+                    "response": [
+                        {
+                            "name": "Healthy Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/health",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "health"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2024-01-15T10:30:00Z\",\n  \"version\": \"2.0.0\",\n  \"services\": {\n    \"vector_search\": \"operational\",\n    \"bigquery\": \"operational\",\n    \"gemini_ai\": \"operational\"\n  }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Root Endpoint",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                ""
+                            ]
+                        },
+                        "description": "Endpoint raíz con información de la API"
+                    },
+                    "response": [
+                        {
+                            "name": "Root Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        ""
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"message\": \"MentorIA Chatbot API v2.0.0\",\n  \"description\": \"Educational chatbot with hierarchical agents, vector search, and BigQuery integration\",\n  \"endpoints\": {\n    \"chat\": \"/chat\",\n    \"conversations\": \"/conversations\",\n    \"content\": \"/content\",\n    \"health\": \"/health\"\n  }\n}"
+                        }
+                    ]
+                }
+            ],
+            "description": "Endpoints para verificar el estado de la API"
+        },
+        {
+            "name": "💬 Chat Interactions",
+            "item": [
+                {
+                    "name": "Simple Message",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"message\": \"Hola, ¿qué es MentorIA?\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/chat",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "chat"
+                            ]
+                        },
+                        "description": "Envía un mensaje simple al chatbot"
+                    },
+                    "response": [
+                        {
+                            "name": "Text Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"message\": \"Hola, ¿qué es MentorIA?\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/chat",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "chat"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"response_type\": \"text\",\n  \"data\": {\n    \"message\": \"¡Hola! Soy MentorIA, tu asistente educativo inteligente. Estoy diseñado para ayudarte con tus estudios, especialmente en matemáticas, ciencias y otras materias. Puedo responder preguntas, explicar conceptos, y proporcionarte recursos educativos personalizados. ¿En qué puedo ayudarte hoy?\"\n  }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Buttons Response",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"message\": \"Necesito ayuda con matemáticas\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/chat",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "chat"
+                            ]
+                        },
+                        "description": "Ejemplo de respuesta con botones para selección"
+                    },
+                    "response": [
+                        {
+                            "name": "Buttons Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"message\": \"Necesito ayuda con matemáticas\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/chat",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "chat"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"response_type\": \"buttons\",\n  \"data\": {\n    \"message\": \"Perfecto, puedo ayudarte con matemáticas. ¿Qué tema específico te interesa?\",\n    \"buttons\": [\n      {\n        \"text\": \"Álgebra\",\n        \"value\": \"algebra\",\n        \"type\": \"button\"\n      },\n      {\n        \"text\": \"Geometría\",\n        \"value\": \"geometria\",\n        \"type\": \"button\"\n      },\n      {\n        \"text\": \"Cálculo\",\n        \"value\": \"calculo\",\n        \"type\": \"button\"\n      },\n      {\n        \"text\": \"Estadística\",\n        \"value\": \"estadistica\",\n        \"type\": \"button\"\n      }\n    ]\n  }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Content Cards Response",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"message\": \"Muéstrame contenido sobre ecuaciones cuadráticas\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/chat",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "chat"
+                            ]
+                        },
+                        "description": "Ejemplo de respuesta con tarjetas de contenido"
+                    },
+                    "response": [
+                        {
+                            "name": "Content Cards Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"message\": \"Muéstrame contenido sobre ecuaciones cuadráticas\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/chat",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "chat"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"response_type\": \"content_cards\",\n  \"data\": {\n    \"message\": \"Aquí tienes recursos sobre ecuaciones cuadráticas:\",\n    \"cards\": [\n      {\n        \"id\": \"card_1\",\n        \"title\": \"Ecuaciones Cuadráticas: Conceptos Básicos\",\n        \"content\": \"Una ecuación cuadrática es una ecuación de la forma ax² + bx + c = 0, donde a, b y c son números reales y a ≠ 0.\",\n        \"type\": \"educational\",\n        \"tags\": [\"álgebra\", \"ecuaciones\", \"cuadráticas\"],\n        \"url\": \"https://example.com/ecuaciones-cuadraticas\"\n      },\n      {\n        \"id\": \"card_2\",\n        \"title\": \"Fórmula General para Resolver Ecuaciones Cuadráticas\",\n        \"content\": \"La fórmula x = (-b ± √(b² - 4ac)) / 2a nos permite encontrar las raíces de cualquier ecuación cuadrática.\",\n        \"type\": \"formula\",\n        \"tags\": [\"fórmula\", \"resolución\", \"raíces\"],\n        \"url\": \"https://example.com/formula-general\"\n      },\n      {\n        \"id\": \"card_3\",\n        \"title\": \"Ejercicios Prácticos de Ecuaciones Cuadráticas\",\n        \"content\": \"Colección de ejercicios con diferentes niveles de dificultad para practicar la resolución de ecuaciones cuadráticas.\",\n        \"type\": \"exercise\",\n        \"tags\": [\"ejercicios\", \"práctica\", \"problemas\"],\n        \"url\": \"https://example.com/ejercicios-cuadraticas\"\n      }\n    ]\n  }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Send User Data",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"user_data\": [\n    {\n      \"field\": \"name\",\n      \"value\": \"María García\"\n    },\n    {\n      \"field\": \"age\",\n      \"value\": 25\n    },\n    {\n      \"field\": \"grade\",\n      \"value\": \"3er año\"\n    },\n    {\n      \"field\": \"subject\",\n      \"value\": \"Matemáticas\"\n    },\n    {\n      \"field\": \"learning_style\",\n      \"value\": \"visual\"\n    },\n    {\n      \"field\": \"goals\",\n      \"value\": [\"Mejorar en álgebra\", \"Entender geometría\"]\n    }\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/chat",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "chat"
+                            ]
+                        },
+                        "description": "Envía datos estructurados del usuario para actualizar el perfil"
+                    },
+                    "response": [
+                        {
+                            "name": "User Data Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"user_data\": [\n    {\n      \"field\": \"name\",\n      \"value\": \"María García\"\n    },\n    {\n      \"field\": \"age\",\n      \"value\": 25\n    },\n    {\n      \"field\": \"grade\",\n      \"value\": \"3er año\"\n    },\n    {\n      \"field\": \"subject\",\n      \"value\": \"Matemáticas\"\n    },\n    {\n      \"field\": \"learning_style\",\n      \"value\": \"visual\"\n    },\n    {\n      \"field\": \"goals\",\n      \"value\": [\"Mejorar en álgebra\", \"Entender geometría\"]\n    }\n  ]\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/chat",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "chat"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"response_type\": \"text\",\n  \"data\": {\n    \"message\": \"¡Perfecto! He actualizado tu perfil con la siguiente información:\\n\\n• Nombre: María García\\n• Edad: 25 años\\n• Grado: 3er año\\n• Materia principal: Matemáticas\\n• Estilo de aprendizaje: Visual\\n• Objetivos: Mejorar en álgebra y entender geometría\\n\\nAhora puedo proporcionarte contenido más personalizado y relevante para tus necesidades. ¿Te gustaría que te ayude con algún tema específico de matemáticas?\"\n  }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Content Creation Redirect",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"message\": \"¿Cómo puedo crear una planeación?\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/chat",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "chat"
+                            ]
+                        },
+                        "description": "Ejemplo de redirección a herramientas de creación de contenido"
+                    },
+                    "response": [
+                        {
+                            "name": "Content Creation Redirect Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"message\": \"¿Cómo puedo crear una planeación?\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/chat",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "chat"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"response_type\": \"content_cards\",\n  \"data\": {\n    \"intro_text\": \"Excelente pregunta, señor/señora. Para crear planeaciones didácticas personalizadas, puede utilizar nuestra herramienta especializada que le permitirá desarrollar contenido adaptado a su contexto educativo.\",\n    \"content_cards\": [\n      {\n        \"id\": \"planeacion_redirection\",\n        \"title\": \"Crear Planeación Gratuita\",\n        \"description\": \"Accede a la herramienta para crear planeaciones didácticas personalizadas\",\n        \"content\": \"Crea planeaciones completas con objetivos, actividades, evaluación y recursos adaptados a tu contexto educativo.\",\n        \"type\": \"redirect\",\n        \"url\": \"https://redmagisterial.com/red-magia/crear-planeacion-gratutia\",\n        \"tags\": [\"planeación\", \"didáctica\", \"gratuita\"]\n      }\n    ],\n    \"total_results\": 1\n  }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Low Confidence Redirect",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"message\": \"Necesito recursos muy específicos para enseñar programación a niños de 3 años\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/chat",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "chat"
+                            ]
+                        },
+                        "description": "Ejemplo de redirección cuando no se encuentran resultados con suficiente confianza"
+                    },
+                    "response": [
+                        {
+                            "name": "Low Confidence Redirect Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"message\": \"Necesito recursos muy específicos para enseñar programación a niños de 3 años\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/chat",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "chat"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"response_type\": \"content_cards\",\n  \"data\": {\n    \"intro_text\": \"Los recursos disponibles no tienen la precisión suficiente para su consulta específica. Le recomiendo crear contenido personalizado que se ajuste exactamente a sus necesidades.\",\n    \"content_cards\": [\n      {\n        \"id\": \"planeacion_redirection\",\n        \"title\": \"Crear Planeación Gratuita\",\n        \"description\": \"Accede a la herramienta para crear planeaciones didácticas personalizadas\",\n        \"content\": \"Crea planeaciones completas con objetivos, actividades, evaluación y recursos adaptados a tu contexto educativo.\",\n        \"type\": \"redirect\",\n        \"url\": \"https://redmagisterial.com/red-magia/crear-planeacion-gratutia\",\n        \"tags\": [\"planeación\", \"didáctica\", \"gratuita\"]\n      },\n      {\n        \"id\": \"med_redirection\",\n        \"title\": \"Crear Material Educativo Digital (MED)\",\n        \"description\": \"Accede a la herramienta para crear materiales educativos digitales\",\n        \"content\": \"Desarrolla recursos digitales interactivos, presentaciones, videos y otros materiales educativos innovadores.\",\n        \"type\": \"redirect\",\n        \"url\": \"https://redmagisterial.com/login?previous=/red-magia/meds/crear-med\",\n        \"tags\": [\"MED\", \"digital\", \"interactivo\"]\n      }\n    ],\n    \"total_results\": 2\n  }\n}"
+                        }
+                    ]
+                }
+            ],
+            "description": "Endpoints para interacciones de chat con el chatbot"
+        },
+        {
+            "name": "💬 Conversation Management",
+            "item": [
+                {
+                    "name": "Get Conversation Messages",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/conversations/{{conversation_id}}/messages?page=1&size=8",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "conversations",
+                                "{{conversation_id}}",
+                                "messages"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (1-based)"
+                                },
+                                {
+                                    "key": "size",
+                                    "value": "8",
+                                    "description": "Number of messages per page (max 50)"
+                                }
+                            ]
+                        },
+                        "description": "Obtiene mensajes paginados de una conversación específica"
+                    },
+                    "response": [
+                        {
+                            "name": "Messages Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/conversations/{{conversation_id}}/messages?page=1&size=8",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "conversations",
+                                        "{{conversation_id}}",
+                                        "messages"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "size",
+                                            "value": "8"
+                                        }
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"messages\": [\n    {\n      \"id\": \"msg_001\",\n      \"user_id\": \"{{user_id}}\",\n      \"conversation_id\": \"{{conversation_id}}\",\n      \"message\": \"Hola, ¿qué es MentorIA?\",\n      \"message_type\": \"user\",\n      \"timestamp\": \"2024-01-15T10:30:00Z\",\n      \"metadata\": {\n        \"flow\": \"chat\"\n      }\n    },\n    {\n      \"id\": \"msg_002\",\n      \"user_id\": \"{{user_id}}\",\n      \"conversation_id\": \"{{conversation_id}}\",\n      \"message\": \"¡Hola! Soy MentorIA, tu asistente educativo inteligente...\",\n      \"message_type\": \"bot\",\n      \"timestamp\": \"2024-01-15T10:30:05Z\",\n      \"metadata\": {\n        \"flow\": \"chat\"\n      }\n    }\n  ],\n  \"total\": 2,\n  \"page\": 1,\n  \"size\": 8,\n  \"has_next\": false,\n  \"has_previous\": false\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Latest Conversation",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/users/{{user_id}}/latest-conversation",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{user_id}}",
+                                "latest-conversation"
+                            ]
+                        },
+                        "description": "Obtiene la información de la conversación más reciente de un usuario"
+                    },
+                    "response": [
+                        {
+                            "name": "Latest Conversation Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/users/{{user_id}}/latest-conversation",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "users",
+                                        "{{user_id}}",
+                                        "latest-conversation"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"user_id\": \"{{user_id}}\",\n  \"created_at\": \"2024-01-15T10:30:00Z\",\n  \"last_message_at\": \"2024-01-15T10:35:00Z\",\n  \"message_count\": 4,\n  \"is_active\": true\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Conversation Info",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/conversations/{{conversation_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "conversations",
+                                "{{conversation_id}}"
+                            ]
+                        },
+                        "description": "Obtiene información detallada de una conversación específica"
+                    },
+                    "response": [
+                        {
+                            "name": "Conversation Info Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/conversations/{{conversation_id}}",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "conversations",
+                                        "{{conversation_id}}"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"user_id\": \"{{user_id}}\",\n  \"created_at\": \"2024-01-15T10:30:00Z\",\n  \"last_message_at\": \"2024-01-15T10:35:00Z\",\n  \"message_count\": 4,\n  \"is_active\": true\n}"
+                        }
+                    ]
+                }
+            ],
+            "description": "Endpoints para gestión de conversaciones y mensajes"
+        },
+        {
+            "name": "📚 Content Management",
+            "item": [
+                {
+                    "name": "Get MEDs Content",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/content/meds",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "content",
+                                "meds"
+                            ]
+                        },
+                        "description": "Obtiene contenido de Materiales Educativos Digitales"
+                    },
+                    "response": [
+                        {
+                            "name": "MEDs Content Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/content/meds",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "content",
+                                        "meds"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n  \"content\": [\n    {\n      \"id\": \"med_001\",\n      \"title\": \"Matemáticas Interactivas\",\n      \"description\": \"Recursos digitales para el aprendizaje de matemáticas\",\n      \"type\": \"interactive\",\n      \"subject\": \"matemáticas\",\n      \"grade_level\": \"secundaria\",\n      \"url\": \"https://example.com/matematicas-interactivas\"\n    },\n    {\n      \"id\": \"med_002\",\n      \"title\": \"Laboratorio Virtual de Ciencias\",\n      \"description\": \"Simulaciones virtuales para experimentos de ciencias\",\n      \"type\": \"simulation\",\n      \"subject\": \"ciencias\",\n      \"grade_level\": \"secundaria\",\n      \"url\": \"https://example.com/laboratorio-virtual\"\n    }\n  ],\n  \"total\": 2,\n  \"page\": 1,\n  \"per_page\": 10\n}"
+                        }
+                    ]
+                }
+            ],
+            "description": "Endpoints para gestión de contenido educativo"
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Auto-generate user_id and conversation_id if not set",
+                    "if (!pm.environment.get('user_id')) {",
+                    "    pm.environment.set('user_id', pm.variables.replaceIn('{{$guid}}'));",
+                    "}",
+                    "if (!pm.environment.get('conversation_id')) {",
+                    "    pm.environment.set('conversation_id', pm.variables.replaceIn('{{$guid}}'));",
+                    "}",
+                    "",
+                    "// Log request details",
+                    "console.log('Request URL:', pm.request.url.toString());",
+                    "console.log('Request Method:', pm.request.method);",
+                    "console.log('User ID:', pm.environment.get('user_id'));",
+                    "console.log('Conversation ID:', pm.environment.get('conversation_id'));"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Test response status",
+                    "pm.test('Status code is 200 or 201', function () {",
+                    "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                    "});",
+                    "",
+                    "// Test response time",
+                    "pm.test('Response time is less than 5000ms', function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+                    "});",
+                    "",
+                    "// Test response has JSON body",
+                    "pm.test('Response has JSON body', function () {",
+                    "    pm.response.to.have.jsonBody();",
+                    "});",
+                    "",
+                    "// Log response details",
+                    "console.log('Response Status:', pm.response.status);",
+                    "console.log('Response Time:', pm.response.responseTime + 'ms');",
+                    "",
+                    "// For chat responses, test structure",
+                    "if (pm.request.url.path.includes('/chat')) {",
+                    "    pm.test('Chat response has required fields', function () {",
+                    "        const jsonData = pm.response.json();",
+                    "        pm.expect(jsonData).to.have.property('conversation_id');",
+                    "        pm.expect(jsonData).to.have.property('response_type');",
+                    "        pm.expect(jsonData).to.have.property('data');",
+                    "    });",
+                    "}"
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "https://redmag-chatbot-api-prod-324789362064.us-east1.run.app",
+            "type": "string"
+        },
+        {
+            "key": "user_id",
+            "value": "",
+            "type": "string",
+            "description": "ID único del usuario (se genera automáticamente)"
+        },
+        {
+            "key": "conversation_id",
+            "value": "",
+            "type": "string",
+            "description": "ID único de la conversación (se genera automáticamente)"
+        }
+    ]
+}

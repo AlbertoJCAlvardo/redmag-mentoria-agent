@@ -56,6 +56,7 @@ class ComplexQueryAgent:
             - **Opción B (`vector_search`):** Si la mejor ayuda es buscar contenido, elige esta opción. Tu tarea es:
                 1.  **Crear el Query Aumentado**: Sintetiza el mensaje del usuario y el "Contexto Relevante" en un query de búsqueda semánticamente denso y preciso.
                 2.  **Crear el Texto Introductorio**: Escribe un párrafo amigable que contextualice los resultados que el usuario verá con personalidad JARVIS.
+            - **Opción C (`content_creation_redirect`):** Si el usuario solicita explícitamente crear planeaciones, MEDs, o contenido educativo, o si después de una búsqueda no se encuentran resultados con más del 65% de confianza, redirige al usuario a las herramientas de creación de contenido.
 
             **Responde ÚNICAMENTE con un objeto JSON válido con la siguiente estructura:**
             ```json
@@ -63,11 +64,13 @@ class ComplexQueryAgent:
                 "intent": "<string: tu análisis refinado de la intención>",
                 "analysis": "<string: tu razonamiento para la acción final>",
                 "action": {{
-                    "type": "<string: 'direct_answer' | 'vector_search'>",
+                    "type": "<string: 'direct_answer' | 'vector_search' | 'content_creation_redirect'>",
                     "data": {{
                         "response_text": "<string: para 'direct_answer', la respuesta final y completa con personalidad JARVIS>",
                         "query": "<string: para 'vector_search', el query aumentado>",
-                        "intro_text": "<string: para 'vector_search', el texto que introduce los resultados con personalidad JARVIS>"
+                        "intro_text": "<string: para 'vector_search', el texto que introduce los resultados con personalidad JARVIS>",
+                        "redirect_type": "<string: para 'content_creation_redirect', 'planeacion' | 'med' | 'both'>",
+                        "redirect_message": "<string: para 'content_creation_redirect', mensaje explicativo con personalidad JARVIS>"
                     }}
                 }}
             }}

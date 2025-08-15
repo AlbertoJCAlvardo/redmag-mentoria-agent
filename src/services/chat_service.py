@@ -273,6 +273,9 @@ class ChatService:
         if action_type == "direct_answer":
             return {"type": "text", "data": {"text": action_data.get("response_text")}}
 
+        if action_type == "content_creation_redirect":
+            return self._generate_content_creation_redirect(action_data)
+
         if action_type == "needs_deep_analysis":
             selected_keys = action_data.get("selected_context_keys", [])
             nem_context = {k: v for k, v in self.gemini_adapter.config.knowledge_base_nem.items() if k in selected_keys}
@@ -296,13 +299,30 @@ class ChatService:
 
             search_results = self.vector_adapter.search_similar(query=query, num_neighbors=5)
             if not search_results:
-                return {"type": "text", "data": {"text": "No encontré contenido para tu consulta"}}
+                return self._generate_content_creation_redirect({
+                    "redirect_type": "both",
+                    "redirect_message": "No encontré contenido específico para tu consulta. Te sugiero crear tu propio contenido educativo personalizado."
+                })
+            
+            # Verificar confianza de los resultados (distance < 0.35 equivale a > 65% de confianza)
+            high_confidence_results = []
+            for result in search_results:
+                distance = result.get("distance", 1.0)
+                if distance < 0.35:  # Más del 65% de confianza
+                    high_confidence_results.append(result)
+            
+            # Si no hay resultados con alta confianza, redirigir a creación de contenido
+            if not high_confidence_results:
+                return self._generate_content_creation_redirect({
+                    "redirect_type": "both",
+                    "redirect_message": "Los recursos disponibles no tienen la precisión suficiente para tu consulta. Te recomiendo crear contenido personalizado que se ajuste exactamente a tus necesidades."
+                })
             
             intro_text = action_data.get("intro_text", "Aquí tienes algunos recursos:")
             
             # Crear content_cards con información más detallada
             content_cards = []
-            for result in search_results:
+            for result in high_confidence_results:
                 content_card = {
                     "id": result.get("id", ""),
                     "content_type": result.get("content_type", "med"),
@@ -444,4 +464,42 @@ class ChatService:
     def _generate_error_response(self, text: str) -> Dict[str, Any]:
         """Generate error response."""
         logger.warning(f"Generating error response: {text}")
-        return {"type": "text", "data": {"text": text}} 
+        return {"type": "text", "data": {"text": text}}
+
+    def _generate_content_creation_redirect(self, action_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate content creation redirect response."""
+        redirect_type = action_data.get("redirect_type", "both")
+        redirect_message = action_data.get("redirect_message", "Te sugiero crear contenido educativo personalizado.")
+        
+        content_cards = []
+        
+        if redirect_type in ["planeacion", "both"]:
+            content_cards.append({
+                "id": "planeacion_redirection",
+                "title": "Crear Planeación Gratuita",
+                "description": "Accede a la herramienta para crear planeaciones didácticas personalizadas",
+                "content": "Crea planeaciones completas con objetivos, actividades, evaluación y recursos adaptados a tu contexto educativo.",
+                "type": "redirect",
+                "url": "https://redmagisterial.com/red-magia/crear-planeacion-gratutia",
+                "tags": ["planeación", "didáctica", "gratuita"]
+            })
+        
+        if redirect_type in ["med", "both"]:
+            content_cards.append({
+                "id": "med_redirection",
+                "title": "Crear Material Educativo Digital (MED)",
+                "description": "Accede a la herramienta para crear materiales educativos digitales",
+                "content": "Desarrolla recursos digitales interactivos, presentaciones, videos y otros materiales educativos innovadores.",
+                "type": "redirect",
+                "url": "https://redmagisterial.com/login?previous=/red-magia/meds/crear-med",
+                "tags": ["MED", "digital", "interactivo"]
+            })
+        
+        return {
+            "type": "content_cards",
+            "data": {
+                "intro_text": redirect_message,
+                "content_cards": content_cards,
+                "total_results": len(content_cards)
+            }
+        } 

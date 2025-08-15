@@ -53,4 +53,38 @@ class ErrorResponse(BaseModel):
     
     error: str = Field(..., description="Error message")
     detail: Optional[str] = Field(None, description="Detailed error information")
-    timestamp: datetime = Field(default_factory=datetime.utcnow) 
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+
+class MessageResponse(BaseModel):
+    """Model for individual message responses."""
+    
+    id: str = Field(..., description="Message unique identifier")
+    user_id: str = Field(..., description="User ID who sent the message")
+    conversation_id: str = Field(..., description="Conversation ID")
+    message: str = Field(..., description="Message content")
+    message_type: str = Field(..., description="Type of message: 'user' or 'bot'")
+    timestamp: datetime = Field(..., description="Message timestamp")
+    metadata: Optional[Dict[str, Any]] = Field(None, description="Additional message metadata")
+
+
+class MessageListResponse(BaseModel):
+    """Model for paginated message list responses."""
+    
+    messages: List[MessageResponse] = Field(..., description="List of messages")
+    total: int = Field(..., description="Total number of messages")
+    page: int = Field(..., description="Current page number")
+    size: int = Field(..., description="Page size")
+    has_next: bool = Field(..., description="Whether there are more pages")
+    has_previous: bool = Field(..., description="Whether there are previous pages")
+
+
+class ConversationResponse(BaseModel):
+    """Model for conversation information responses."""
+    
+    conversation_id: str = Field(..., description="Conversation unique identifier")
+    user_id: str = Field(..., description="User ID")
+    created_at: datetime = Field(..., description="Conversation creation timestamp")
+    last_message_at: Optional[datetime] = Field(None, description="Last message timestamp")
+    message_count: int = Field(..., description="Total number of messages in conversation")
+    is_active: bool = Field(..., description="Whether conversation is still active") 
