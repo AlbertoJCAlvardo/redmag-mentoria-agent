@@ -67,7 +67,7 @@ class Config:
 
         # --- Static Knowledge Base Loading ---
         # Construct absolute paths to the knowledge base files inside 'src/static'
-        static_files_path = BASE_DIR / "src" /"static"
+        static_files_path = BASE_DIR /"static"
         knowledge_base_nem_path = static_files_path / "knowledge_base_nem.json"
         sep_knowledge_base_path = static_files_path / "sep_knowledge_base.json"
 
