@@ -26,7 +26,6 @@ wheels/
 .env.production
 
 # Google Cloud Service Account Keys
-*.json
 !package.json
 !package-lock.json
 !tsconfig.json
