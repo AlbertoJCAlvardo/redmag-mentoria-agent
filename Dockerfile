@@ -24,4 +24,5 @@ COPY . .
 # - The `--bind :$PORT` command is crucial. It tells Gunicorn to listen on
 #   whatever port Cloud Run assigns via the $PORT environment variable.
 # - We use uvicorn workers, which are required for an ASGI app like FastAPI.
-CMD exec gunicorn --bind :$PORT --workers 4 --worker-class uvicorn.workers.UvicornWorker app:app
+# - We now use the full path to gunicorn to ensure it's always found.
+CMD exec /usr/local/bin/gunicorn --bind :$PORT --workers 4 --worker-class uvicorn.workers.UvicornWorker app:app
