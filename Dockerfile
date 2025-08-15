@@ -19,6 +19,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of your application code into the container
 COPY . .
 
-# Command to run the application using the recommended "exec form".
-# This form avoids a shell intermediary and correctly finds gunicorn in the system's PATH.
-CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "app:app"]
+# Command to run the application by invoking gunicorn as a Python module.
+# This is the most reliable method as it doesn't depend on the system's PATH.
+CMD ["python", "-m", "gunicorn", "--bind", "0.0.0.0:$PORT", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "app:app"]
