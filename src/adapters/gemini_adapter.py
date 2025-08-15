@@ -90,11 +90,55 @@ class GeminiAdapter:
             Agent response or None if error
         """
         try:
-            generation_config = genai.types.GenerationConfig(response_mime_type="application/json")
+            # Usar response_mime_type para forzar respuesta JSON (disponible en versiones más recientes)
+            try:
+                generation_config = genai.types.GenerationConfig(
+                    temperature=0.1,
+                    top_p=0.8,
+                    top_k=40,
+                    response_mime_type="application/json"
+                )
+            except TypeError:
+                # Fallback para versiones anteriores
+                generation_config = genai.types.GenerationConfig(
+                    temperature=0.1,
+                    top_p=0.8,
+                    top_k=40
+                )
+                # Agregar instrucción JSON al prompt
+                prompt = f"{prompt}\n\nResponde únicamente con un JSON válido sin texto adicional."
+            
             response = model.generate_content(prompt, generation_config=generation_config)
-            result = json.loads(response.text)
-            logger.info(f"Agent response received from {model.model_name}: {result}")
-            return result
+            
+            # Intentar parsear la respuesta como JSON
+            try:
+                result = json.loads(response.text)
+                logger.info(f"Agent response received from {model.model_name}: {result}")
+                return result
+            except json.JSONDecodeError as json_error:
+                logger.warning(f"Failed to parse JSON response: {response.text}")
+                logger.warning(f"JSON error: {json_error}")
+                
+                # Fallback: intentar extraer JSON del texto
+                import re
+                json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
+                if json_match:
+                    try:
+                        result = json.loads(json_match.group())
+                        logger.info(f"Extracted JSON from response: {result}")
+                        return result
+                    except json.JSONDecodeError:
+                        pass
+                
+                # Si no se puede parsear, devolver respuesta de texto simple
+                logger.warning("Returning text response as fallback")
+                return {
+                    "type": "text",
+                    "data": {
+                        "message": response.text
+                    }
+                }
+                
         except Exception as e:
             logger.error(f"Error executing agent prompt on {model.model_name}: {e}", exc_info=True)
             return None 
