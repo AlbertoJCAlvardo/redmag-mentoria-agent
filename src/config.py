@@ -69,9 +69,8 @@ class Config:
         # Construct absolute paths to the knowledge base files inside 'src/static'
         # Try multiple possible paths for different deployment scenarios
         possible_static_paths = [
-            BASE_DIR / "static",  # Local development
             Path("/app/src/static"),  # Docker container
-            Path("/app/static"),  # Alternative Docker path
+           
         ]
         
         knowledge_base_nem_path = None
