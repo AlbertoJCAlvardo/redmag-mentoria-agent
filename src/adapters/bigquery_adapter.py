@@ -63,11 +63,28 @@ class BigQueryAdapter:
             query_job = self.client.query(query, job_config=job_config)
             rows = list(query_job)
             if rows:
-                return rows[0].profile_data
-            return None
+                profile_data = rows[0].profile_data
+                
+                # BigQuery puede devolver JSON como string, necesitamos deserializarlo
+                if isinstance(profile_data, str):
+                    try:
+                        profile_data = json.loads(profile_data)
+                        logger.info(f"Deserialized profile data for user_id: {user_id}")
+                    except json.JSONDecodeError as e:
+                        logger.error(f"Failed to deserialize profile data for user_id {user_id}: {e}")
+                        return {}
+                
+                # Verificar que sea un diccionario
+                if isinstance(profile_data, dict):
+                    return profile_data
+                else:
+                    logger.warning(f"Profile data is not a dict for user_id {user_id}: {type(profile_data)}")
+                    return {}
+                    
+            return {}
         except Exception as e:
             logger.error(f"Failed to get user profile for user_id {user_id}: {e}", exc_info=True)
-            return None
+            return {}
 
     def update_user_profile(self, user_id: str, profile_data: Dict[str, Any]) -> bool:
         """
@@ -136,18 +153,27 @@ class BigQueryAdapter:
             rows = list(self.client.query(query, job_config=job_config))
             if rows:
                 context_data = rows[0].context_data
-                # Si context_data es un string JSON, parsearlo a diccionario
+                
+                # BigQuery puede devolver JSON como string, necesitamos deserializarlo
                 if isinstance(context_data, str):
                     try:
-                        return json.loads(context_data)
-                    except json.JSONDecodeError:
-                        logger.error(f"Failed to parse context_data JSON for conversation_id {conversation_id}")
+                        context_data = json.loads(context_data)
+                        logger.info(f"Deserialized context data for conversation_id: {conversation_id}")
+                    except json.JSONDecodeError as e:
+                        logger.error(f"Failed to deserialize context data for conversation_id {conversation_id}: {e}")
                         return {}
-                return context_data
-            return None
+                
+                # Verificar que sea un diccionario
+                if isinstance(context_data, dict):
+                    return context_data
+                else:
+                    logger.warning(f"Context data is not a dict for conversation_id {conversation_id}: {type(context_data)}")
+                    return {}
+                    
+            return {}
         except Exception as e:
             logger.error(f"Failed to get context for conversation_id {conversation_id}: {e}", exc_info=True)
-            return None
+            return {}
 
     def update_conversation_context(self, conversation_id: str, user_id: str, context_data: Dict[str, Any]) -> bool:
         """

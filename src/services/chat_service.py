@@ -51,8 +51,38 @@ class ChatService:
         self._log_user_input(conversation_id, user_id, message, user_data_input)
         
         user_profile = self.bq_adapter.get_user_profile(user_id) or {}
+        
+        # Asegurar que user_profile sea un diccionario
+        if isinstance(user_profile, str):
+            try:
+                import json
+                user_profile = json.loads(user_profile)
+                logger.info(f"Deserialized user_profile from string: {user_profile}")
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to deserialize user_profile: {e}")
+                user_profile = {}
+        
+        if not isinstance(user_profile, dict):
+            logger.warning(f"user_profile is not a dict: {type(user_profile)}, converting to empty dict")
+            user_profile = {}
+            
         logger.info(f"DEBUG - user_profile: {user_profile}, type: {type(user_profile)}")
+        
         conversation_context = self.bq_adapter.get_conversation_context(conversation_id) or {}
+        
+        # Asegurar que conversation_context sea un diccionario
+        if isinstance(conversation_context, str):
+            try:
+                import json
+                conversation_context = json.loads(conversation_context)
+                logger.info(f"Deserialized conversation_context from string: {conversation_context}")
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to deserialize conversation_context: {e}")
+                conversation_context = {}
+        
+        if not isinstance(conversation_context, dict):
+            logger.warning(f"conversation_context is not a dict: {type(conversation_context)}, converting to empty dict")
+            conversation_context = {}
 
         # Debug: Imprimir información del contexto
         logger.info(f"DEBUG - conversation_context: {conversation_context}")
