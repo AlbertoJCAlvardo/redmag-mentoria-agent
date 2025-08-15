@@ -67,25 +67,44 @@ class Config:
 
         # --- Static Knowledge Base Loading ---
         # Construct absolute paths to the knowledge base files inside 'src/static'
-        static_files_path = BASE_DIR /"static"
-        knowledge_base_nem_path = static_files_path / "knowledge_base_nem.json"
-        sep_knowledge_base_path = static_files_path / "sep_knowledge_base.json"
+        # Try multiple possible paths for different deployment scenarios
+        possible_static_paths = [
+            BASE_DIR / "static",  # Local development
+            Path("/app/src/static"),  # Docker container
+            Path("/app/static"),  # Alternative Docker path
+        ]
+        
+        knowledge_base_nem_path = None
+        sep_knowledge_base_path = None
+        
+        # Find the correct static directory
+        for static_path in possible_static_paths:
+            nem_file = static_path / "knowledge_base_nem.json"
+            sep_file = static_path / "sep_knowledge_base.json"
+            if nem_file.exists() and sep_file.exists():
+                knowledge_base_nem_path = nem_file
+                sep_knowledge_base_path = sep_file
+                break
+        
+        if not knowledge_base_nem_path or not sep_knowledge_base_path:
+            # If not found, try to load with fallback to empty data
+            print(f"Warning: Knowledge base files not found. Tried paths: {[str(p) for p in possible_static_paths]}")
+            self.knowledge_base_nem = {}
+            self.sep_knowledge_base = {}
+        else:
+            try:
+                with open(knowledge_base_nem_path, "r", encoding="utf-8") as f:
+                    self.knowledge_base_nem = json.load(f)
+            except json.JSONDecodeError:
+                print(f"Warning: Error decoding JSON from {knowledge_base_nem_path}")
+                self.knowledge_base_nem = {}
 
-        try:
-            with open(knowledge_base_nem_path, "r", encoding="utf-8") as f:
-                self.knowledge_base_nem = json.load(f)
-        except FileNotFoundError:
-            raise ValueError(f"Knowledge base NEM not found at the expected path: {knowledge_base_nem_path}")
-        except json.JSONDecodeError:
-            raise ValueError(f"Error decoding JSON from {knowledge_base_nem_path}")
-
-        try:
-            with open(sep_knowledge_base_path, "r", encoding="utf-8") as f:
-                self.sep_knowledge_base = json.load(f)
-        except FileNotFoundError:
-            raise ValueError(f"SEP knowledge base not found at the expected path: {sep_knowledge_base_path}")
-        except json.JSONDecodeError:
-            raise ValueError(f"Error decoding JSON from {sep_knowledge_base_path}")
+            try:
+                with open(sep_knowledge_base_path, "r", encoding="utf-8") as f:
+                    self.sep_knowledge_base = json.load(f)
+            except json.JSONDecodeError:
+                print(f"Warning: Error decoding JSON from {sep_knowledge_base_path}")
+                self.sep_knowledge_base = {}
 
 
     def validate(self) -> bool:

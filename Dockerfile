@@ -25,6 +25,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of your application code into the container
 COPY . .
 
+# Debug: List the contents to verify files are copied correctly
+RUN echo "=== Debug: Listing app directory ===" && ls -la /app
+RUN echo "=== Debug: Listing src directory ===" && ls -la /app/src
+RUN echo "=== Debug: Listing static directory ===" && ls -la /app/src/static || echo "Static directory not found"
+
 # Expose the port
 EXPOSE $PORT
 
